@@ -21,7 +21,7 @@ def site_newegg(url: str) -> dict:
     item = data.get("MainItem")
     product_info = {
         "sku": product_sku,
-        "title": item.get("Description" or {}).get("Title"),
+        "title": (item.get("Description") or {}).get("Title"),
         "price": float(item.get("FinalPrice")), 
         "stock": bool(item.get("Instock"))
     }

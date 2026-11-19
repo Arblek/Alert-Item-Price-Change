@@ -27,9 +27,12 @@ def send_email(recipient_email: str, subject:str , message: str):
 
     text = f"Subject: {subject} \n\n {message}"
 
-    server = smtplib.SMTP("smtp.gmail.com", 587)
-    server.starttls()
+    try:
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
 
-    server.login(email, password)
-    server.sendmail(email, recipient_email, message)
-    print("Email sent")
+        server.login(email, password)
+        server.sendmail(email, recipient_email, text)
+        print("Email sent")
+    except smtplib.SMTPServerDisconnected:
+        print("SMTP Server error")
