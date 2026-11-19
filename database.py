@@ -51,12 +51,12 @@ def query_data(connection: sqlite3.Connection) -> list[tuple]:
         print(f"Error: {e}")
 
 
-def query_first_two(connection: sqlite3.Connection, sku: str):
-    query = f"SELECT price FROM products_data WHERE sku = ? ORDER BY id DESC LIMIT 2 "
+def query_first(connection: sqlite3.Connection, sku: str):
+    query = f"SELECT price FROM products_data WHERE sku = ? ORDER BY id DESC LIMIT 1 "
 
     try:
         with connection:
-            rows = connection.execute(query, (sku,)).fetchall()
+            rows = connection.execute(query, [sku]).fetchall()
             return rows
     except Exception as e:
         print(f"Error: {e}")

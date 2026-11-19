@@ -2,20 +2,20 @@ import os
 import sqlite3
 import smtplib
 from dotenv import load_dotenv
-from database import query_first_two
+from database import query_first
 
-def alert_price(connection: sqlite3.Connection, sku: str, recipient_email: str, subject:str , message: str):
+def alert_price(connection: sqlite3.Connection, sku: str, price_less_than: float,recipient_email: str, subject:str , message: str):
     try:
-        price1, price2 = query_first_two(connection, sku)
-        if compare_price(price1[0], price2[0]):
+        price = query_first(connection, sku)
+        if compare_price(price[0][0], price_less_than):
             print("Price dropped")
             send_email(recipient_email, subject, message)
     except Exception as e:
-        print(f"Error: Cant compare only one entry for the same SKU, minimum two needed {e}")
+        print(f"Error: {e}")
 
 
-def compare_price(price1: float, price2: float) -> bool:
-    if price1 < price2:
+def compare_price(price: float, price_less_than: float) -> bool:
+    if price < price_less_than:
         return True         #Price dropped
     return False            #Price did not drop
 
