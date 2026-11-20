@@ -132,4 +132,5 @@ def main():
             sb.quit()
 
 
-main()
+if __name__ == "__main__":
+    main()
