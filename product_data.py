@@ -1,30 +1,25 @@
-from curl_cffi import requests as cffi_req
-import json
+from seleniumbase import sb_cdp
 
 
-def request_info(url: str, headers: dict | None = None) -> dict:
-    request = cffi_req.get(
-        url,
-        headers=headers,
-        impersonate="chrome",
-        timeout=30,)
-        
+def looks_blocked(html: str) -> bool:
+    low = html.lower()
+    return (
+        len(html) < 5000
+        or "access denied" in low
+        or ("reference #" in low and "akamai" in low)
+        or "are you a human" in low
+        or "px-captcha" in low
+    )
 
-    return request.json()
 
+def scrape_product_cdp(sb: sb_cdp.Chrome, url: str, query: str, wait_selector: str):
+    sb.goto(url)
+    sb.solve_captcha()
 
-def site_newegg(url: str) -> dict:
-    product_sku = url.split('/')[-1]
-    API = f"https://www.newegg.com/product/api/ProductRealtime?ItemNumber={product_sku}"
+    sb.wait_for_element_present(wait_selector, timeout=20)
+    data = sb.evaluate(query)
 
-    data = request_info(API)
-    item = data.get("MainItem")
-    product_info = {
-        "sku": product_sku,
-        "title": (item.get("Description") or {}).get("Title"),
-        "price": float(item.get("FinalPrice")), 
-        "stock": bool(item.get("Instock"))
-    }
-
-    return product_info
-
+    if looks_blocked(sb.get_page_source()):
+        raise "Blocked"
+    else:
+        return data

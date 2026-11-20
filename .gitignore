@@ -1,3 +1,5 @@
 .env
 test.py
 /__pycache__
+/pw_profile
+/downloaded_files

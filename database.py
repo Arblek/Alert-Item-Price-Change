@@ -26,14 +26,14 @@ def create_table(connection: sqlite3.Connection):
         print(f"Error: {e}")
 
 
-def insert_product(connection: sqlite3.Connection, sku: str, title: str, price: float, stock: int):
+def insert_product(connection: sqlite3.Connection, sku: str, title: str, price: float):
     query = """
-            INSERT INTO products_data (sku, title, price, stock) VALUES (?, ?, ?, ?)
+            INSERT INTO products_data (sku, title, price) VALUES (?, ?, ?)
     """
 
     try:
         with connection:
-            connection.execute(query, (sku, title, price, stock))
+            connection.execute(query, (sku, title, price))
     except Exception as e:
         print(f"Error: {e}")
 
