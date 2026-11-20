@@ -14,7 +14,7 @@ def create_table(connection: sqlite3.Connection):
                 id INTEGER PRIMARY KEY,
                 sku TEXT,
                 title TEXT,
-                price REAL,
+                price REAL
             )
     """
 
