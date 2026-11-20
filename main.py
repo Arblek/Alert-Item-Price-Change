@@ -1,5 +1,6 @@
 import os
 import json
+import time
 import random
 from dotenv import load_dotenv
 from seleniumbase import sb_cdp
@@ -97,7 +98,7 @@ def main():
             for data in product_data:
                 url = data.get("url")
                 try:
-                    if data.get("site") == "newegg.gg":
+                    if data.get("site") == "newgg.gg":
                         product = scrape_product_cdp(
                             sb, data.get("url"), NEWEGG_QUERY, NEWEGG_SELECTOR
                         )
@@ -122,7 +123,7 @@ def main():
                         subject,
                         message,
                     )
-                    random.uniform(2, 5)
+                    time.sleep(random.uniform(2, 5))
                 except Exception as exc:
                     print(f"Error processing {url}: {exc}")
                     continue

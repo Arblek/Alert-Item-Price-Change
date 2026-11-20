@@ -20,6 +20,6 @@ def scrape_product_cdp(sb: sb_cdp.Chrome, url: str, query: str, wait_selector: s
     data = sb.evaluate(query)
 
     if looks_blocked(sb.get_page_source()):
-        raise "Blocked"
+        raise RuntimeError("Blocked")
     else:
         return data
