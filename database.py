@@ -27,14 +27,16 @@ def create_table(connection: sqlite3.Connection):
         print(f"Error: {e}")
 
 
-def insert_product(connection: sqlite3.Connection, sku: str, title: str, price: float):
+def insert_product(
+    connection: sqlite3.Connection, sku: str, title: str, price: float, stock: int
+):
     query = """
-            INSERT INTO products_data (sku, title, price) VALUES (?, ?, ?)
+            INSERT INTO products_data (sku, title, price, stock) VALUES (?, ?, ?, ?)
     """
 
     try:
         with connection:
-            connection.execute(query, (sku, title, price))
+            connection.execute(query, (sku, title, price, stock))
     except Exception as e:
         print(f"Error: {e}")
 
@@ -53,7 +55,7 @@ def query_data(connection: sqlite3.Connection) -> list[tuple]:
 
 
 def query_first(connection: sqlite3.Connection, sku: str):
-    query = "SELECT price FROM products_data WHERE sku = ? ORDER BY id DESC LIMIT 1 "
+    query = f"SELECT price FROM products_data WHERE sku = ? ORDER BY id DESC LIMIT 1 "
 
     try:
         with connection:

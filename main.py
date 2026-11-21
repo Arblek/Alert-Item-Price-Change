@@ -16,44 +16,40 @@ from database import (
 PROFILE_DIR = "./pw_profile"
 
 NEWEGG_QUERY = """
-                (() => {
-                    // 1. Extract Product Title
-                    const title = document.querySelector('h1.product-title')?.textContent.trim() || null;
+(() => {
+        const item = window.__initialState__?.ItemDetail;
 
-                    // 2. Extract Price as Float
-                    const priceEl = document.querySelector('.price-current_2026');
-                    let price = null;
-                    if (priceEl) {
-                        const dollars = priceEl.querySelector('strong')?.textContent.trim() || '';
-                        const cents = priceEl.querySelector('sup')?.textContent.trim() || '';
-                        const rawPrice = dollars ? `${dollars}${cents}` : priceEl.textContent.trim();
-                        
-                        // Strip currency symbols, commas (e.g., "1,228.99"), and whitespace before parsing
-                        const cleaned = rawPrice.replace(/[^0-9.]/g, '');
-                        const parsed = parseFloat(cleaned);
-                        price = Number.isNaN(parsed) ? null : parsed;
-                    }
+        const title = item?.Description?.Title
+            || document.querySelector('h1.product-title')?.textContent.trim() || null;
 
-                    // 3. Extract Item Number
-                    const h2s = Array.from(document.querySelectorAll('h2.text-darkgray'));
-                    const itemH2 = h2s.find(el => el.textContent.includes('Item#'));
-                    const sku = itemH2?.querySelector('em')?.textContent.trim() || null;
+        let price = typeof item?.FinalPrice === 'number' ? item.FinalPrice : null;
+        if (price === null) {
+            const priceEl = document.querySelector('.price-current_2026');
+            const raw = priceEl?.textContent.replace(/[^0-9.]/g, '');
+            const parsed = parseFloat(raw);
+            price = Number.isNaN(parsed) ? null : parsed;
+        }
 
-                    return {
-                        sku,
-                        price,
-                        title
-                    };
-                })()
+        const sku = item?.Item
+            || Array.from(document.querySelectorAll('h2.text-darkgray'))
+                .find(el => el.textContent.includes('Item#'))?.querySelector('em')?.textContent.trim()
+            || null;
+
+        // 1 = in stock, 0 = out of stock, null = couldn't tell
+        let in_stock = null;
+        if (item && typeof item.Instock === 'boolean') {
+            in_stock = (item.Instock && item.Stock > 0) ? 1 : 0;
+        }
+
+        return { sku, price, title, in_stock };
+})()
             """
 NEWEGG_SELECTOR = "h1.product-title"
 
 BESTBUY_QUERY = """
 (() => {
-        // 1. Product Title
         const title = document.querySelector('[data-component-name="ProductHeader"] h1')?.textContent.trim() || null;
 
-        // 2. Price as Float
         const priceText = document.querySelector('[data-testid="price-block-customer-price"] .sr-only')?.textContent
             || document.querySelector('[data-testid="price-block-customer-price"]')?.textContent
             || '';
@@ -61,12 +57,10 @@ BESTBUY_QUERY = """
         const parsed = parseFloat(cleaned);
         const price = Number.isNaN(parsed) ? null : parsed;
 
-        // 3. SKU
         const headerDivs = Array.from(document.querySelectorAll('[data-component-name="ProductHeader"] div'));
         const skuDiv = headerDivs.find(el => el.children.length === 0 && el.textContent.trim().startsWith('SKU:'));
         const sku = skuDiv ? skuDiv.textContent.replace(/^SKU:\\s*/i, '').trim() : null;
 
-        // 4. Stock Status (1 = in stock, 0 = out of stock)
         const fulfillmentEl = document.querySelector('[data-component-name="FulfillmentSelector"]');
         const in_stock = fulfillmentEl && !/not in stock|unavailable|sold out/i.test(fulfillmentEl.textContent)
             ? 1
@@ -132,7 +126,7 @@ def main():
                     subject = "Price dropped"
                     message = f"The price for {title} dropped. Current price is {price}. {url}"
 
-                    if product.get("in_stock") == 1:
+                    if product.get("in_stock") != 0:
                         alert_price(
                             connection,
                             sku,
