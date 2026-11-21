@@ -3,4 +3,4 @@ test.py
 /__pycache__
 /pw_profile
 /downloaded_files
-product.db
+products.db
