@@ -55,7 +55,7 @@ def query_data(connection: sqlite3.Connection) -> list[tuple]:
 
 
 def query_first(connection: sqlite3.Connection, sku: str):
-    query = f"SELECT price FROM products_data WHERE sku = ? ORDER BY id DESC LIMIT 1 "
+    query = "SELECT price FROM products_data WHERE sku = ? ORDER BY id DESC LIMIT 1 "
 
     try:
         with connection:

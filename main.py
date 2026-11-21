@@ -61,10 +61,17 @@ BESTBUY_QUERY = """
         const skuDiv = headerDivs.find(el => el.children.length === 0 && el.textContent.trim().startsWith('SKU:'));
         const sku = skuDiv ? skuDiv.textContent.replace(/^SKU:\\s*/i, '').trim() : null;
 
-        const fulfillmentEl = document.querySelector('[data-component-name="FulfillmentSelector"]');
-        const in_stock = fulfillmentEl && !/not in stock|unavailable|sold out/i.test(fulfillmentEl.textContent)
-            ? 1
-            : 0;
+    let in_stock = null;
+    const fulfillmentEl = document.querySelector('[data-component-name="FulfillmentSelector"]');
+    if (fulfillmentEl) {
+        const shipping = Array.from(fulfillmentEl.querySelectorAll('[role="radio"]'))
+            .find(el => /^\\s*shipping/i.test(el.textContent));
+        if (shipping) {
+            const dateLabel = shipping.querySelector('[data-testid="availabilityDateLabel"]')?.textContent.trim();
+            if (/unavailable|not available|sold out|not in stock/i.test(shipping.textContent)) in_stock = 0;
+            else if (dateLabel) in_stock = 1;
+        }
+    }
 
         return { sku, price, title, in_stock };
     })()
