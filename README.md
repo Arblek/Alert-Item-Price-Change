@@ -21,7 +21,7 @@ visits each product in `products.json`, saves the price to a local SQLite databa
 3. Create your `.env` file from the template and fill it in:
 
    ```bash
-   cp .env.example .env
+   cp .example.env .env
    ```
 
    | Variable | Meaning |
