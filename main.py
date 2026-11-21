@@ -131,7 +131,7 @@ def main():
 
                     print(sku, " ", title)
                     subject = "Price dropped"
-                    message = f"The price for {title} dropped. Current price is {price}. {url}"
+                    message = f"The price for {title} is below the set treshold of {data.get("price_less_than")}. Current price is {price}. {url}"
 
                     if product.get("in_stock") != 0:
                         alert_price(
