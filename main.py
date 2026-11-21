@@ -71,6 +71,11 @@ BESTBUY_QUERY = """
     """
 BESTBUY_SELECTOR = '[data-component-name="ProductHeader"] h1'
 
+SITES = {
+    "newgg.gg": (NEWEGG_QUERY, NEWEGG_SELECTOR),
+    "bestbuy.com": (BESTBUY_QUERY, BESTBUY_SELECTOR),
+}
+
 
 def all_unique_sku(connection) -> set:
     data_list = query_data(connection)
@@ -98,23 +103,27 @@ def main():
             for data in product_data:
                 url = data.get("url")
                 try:
-                    if data.get("site") == "newgg.gg":
-                        product = scrape_product_cdp(
-                            sb, data.get("url"), NEWEGG_QUERY, NEWEGG_SELECTOR
+                    site = data.get("site")
+                    if site not in SITES:
+                        raise ValueError(
+                            f"Unknown site {site!r}, expected one of {sorted(SITES)}"
                         )
-                    elif data.get("site") == "bestbuy.com":
-                        product = scrape_product_cdp(
-                            sb, data.get("url"), BESTBUY_QUERY, BESTBUY_SELECTOR
-                        )
+
+                    query, selector = SITES[site]
+                    product = scrape_product_cdp(sb, url, query, selector)
+
                     sku = product.get("sku")
                     title = product.get("title")
                     price = product.get("price")
+
+                    if not sku or price is None:
+                        raise ValueError(f"Incomplete scrape: {product}")
 
                     insert_product(connection, sku, title, price)
 
                     print(sku, " ", title)
                     subject = "Price dropped"
-                    message = f"The price for {title} dropped"
+                    message = f"The price for {title} dropped. Current price is {price}. {url}"
                     alert_price(
                         connection,
                         sku,

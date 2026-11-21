@@ -27,27 +27,27 @@
     {
         "url": "https://www.newegg.com/crucial-1tb-p310-nvme-2-0/p/N82E16820156416",
         "price_less_than": 100,
-        "site": "newgg.gg"
+        "site": "newegg.com"
     },
     {
         "url": "https://www.newegg.com/amd-ryzen-7-9000-series-ryzen-7-9800x3d-granite-ridge-zen-5-socket-am5-desktop-cpu-processor/p/N82E16819113877",
         "price_less_than": 400,
-        "site": "newgg.gg"
+        "site": "newegg.com"
     },
     {
         "url": "https://www.newegg.com/gigabyte-x870-aorus-elite-wifi7-atx-motherboard-amd-x870-am5/p/N82E16813145519",
         "price_less_than": 220,
-        "site": "newgg.gg"
+        "site": "newegg.com"
     },
     {
         "url": "https://www.newegg.com/asrock-atx3-1-pcie5-1-1600-w-cybenetics-gold-power-supply-black-pg-1600g/p/N82E16817955003",
         "price_less_than": 150,
-        "site": "newgg.gg"
+        "site": "newegg.com"
     },
     {
         "url": "https://www.newegg.com/asrock-challenger-b580-cl-12go-arc-b580-12gb-graphics-card-double-fans/p/N82E16814930131",
         "price_less_than": 450,
-        "site": "newgg.gg"
+        "site": "newegg.com"
     }
 
 ]
